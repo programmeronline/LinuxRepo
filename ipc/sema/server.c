@@ -16,7 +16,7 @@ static int sem_read_wait();
 
 static int sersemid;
 
-
+//test github
 int main()
 {
 	COMMAND cmnd;
