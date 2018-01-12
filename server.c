@@ -20,20 +20,6 @@ int main()
 	//create serverfifo for client
 	ret = mkfifo(SER_FIFO_NAME, 0666);
 	int i=0;
-	/*for(i=0; i<10; i++)
-	{
-	system("./client1");
-		if(ret == -1){	perror("Server fifo creation:");}
-		ret = fork();
-		if(ret == 0)
-			execl("./client1","client1",NULL);
-		ret = fork();
-		if(ret == 0)
-			execl("./client2","client2",NULL);
-		ret = fork();
-		if(ret == 0)
-			execl("./client3","client3",NULL);
-	}*/
 	//open the serverfifo for client in read mod
 	//read the command data from any client: block on read
 	if((sercmndfd = open(SER_FIFO_NAME, O_RDONLY)) == -1)
