@@ -13,6 +13,8 @@ sub: sub.o
 	gcc -o sub sub.o
 mul: mul.o
 	gcc -o mul mul.o
+loop: loop.o
+	gcc -o loop loop.o
 
 server.o: server.c headers.h declarations.h
 	gcc -c server.c
@@ -28,6 +30,8 @@ sub.o: sub.c headers.h declarations.h
 	gcc -c sub.c
 mul.o: mul.c headers.h declarations.h
 	gcc -c mul.c
+loop.o: loop.c headers.h
+	gcc -c loop.c
 readcommand.o: readcommand.c declarations.h headers.h
 	gcc -c readcommand.c
 notifyclient.o: notifyclient.c declarations.h headers.h
