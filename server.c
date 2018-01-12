@@ -11,7 +11,7 @@
 #define MUL_CMND_FIFO_NAME "./mulcmndfifo"
 #define MUL_RES_FIFO_NAME "./mulresfifo"
 
-//#define DEBUG
+#define DEBUG
 int main()
 {
 	COMMAND cmnd;
