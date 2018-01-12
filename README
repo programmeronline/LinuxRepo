@@ -1,1 +1,38 @@
 This is my linux repo!
+1) semaphores is a synchronization mechanism
+
+2) Available as kernel data structure
+
+3) flag is incremented or decremented atomically (two operations)
+
+struct sema
+{
+	flag;
+	list of waiting processes;
+	spin lock;
+}
+4) scope of flag is system
+
+5) spin lock 
+
+
+i) decide how many process can access the semaphore variable
+ii) before entering the critical sections, the semephore enters the wait operation
+	i) if semaphore value is > 0
+		then decrement and proceed
+			aftere end of critical section, increments the semaphore value, generate an event for list of waiting processes
+			if the process which is in critical sections is killed by a signal, it will make rest of proc to wait
+			(cfq comletely fair queue scheduler)
+	ii) if 0 then the process goes to waiting queue
+nice to change the priority
+
+1) semctl is used to perform operation on semaphore
+i) SETVAL use to set tha value of semaphore
+
+semaphores are used for shareable resources not shared resources
+even if a resources is not shared
+not recommended to use for a resource which is always shared
+
+GDB
+use "commands" to execute multiple commands after breakpoint is hit. like printing loop or array values
+

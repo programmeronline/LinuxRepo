@@ -145,6 +145,7 @@ int main()
 				}
 				break;
 		}
+		wait(&ret);
 	}
 return 0;
 }
