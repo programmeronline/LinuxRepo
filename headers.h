@@ -8,5 +8,5 @@
 #include <signal.h>
 #include <string.h>
 #include <sys/stat.h>
-
+#include <sys/wait.h>
 #endif
