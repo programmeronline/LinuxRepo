@@ -2,16 +2,19 @@
 
 int main()
 {
-int i=0,n;
+	int i=0,n;
 
-printf("Enter n\n");
-scanf("%d",&n);
+	printf("Enter n\n");
+	scanf("%d",&n);
 
-for(i=0; i<n; i++)
-{
-printf("Iteration %d\n",i);
+	for(i=0; i<n; i++)
+	{
+		printf("Iteration %d\n",i);
 
-system("./client1 & ./client1");
-}
-exit(0);
+		system("./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 &./client1 & ./client1");
+		if(i %1000 == 0)
+			system("killall client1");
+	}
+//	system("killall client1");
+	exit(0);
 }

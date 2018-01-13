@@ -18,9 +18,9 @@ void notifyClient(RES res)
 	while((cliresfd = open(clififo, O_WRONLY)) == -1);
 	if(cliresfd == -1 ){perror("Server: open cliresfifo:");}
 	ret = write(cliresfd, &res, sizeof(res));
+	close(cliresfd);
 	if(ret == -1){perror("Server writing result to client:");}
 	//kill the particular process
-	//sleep(1);
 #ifdef DEBUG
 	printf("Server: server wrtitten res to cliresfifo successfully\n");
 #endif

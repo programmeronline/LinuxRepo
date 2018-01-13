@@ -6,23 +6,25 @@ int cliresfd;
 void displayres(int );
 COMMAND cmnd;
 RES res;
+char clififo[20];
+char unl[25]={"unlink "};
 void displayres(int signal)
 {
 	int ret;
 #ifdef DEBUG 
-	printf("Client in signal handler\n");	
+	printf("Client in signal handler pid %d\n",getpid());	
 #endif
 	ret = read(cliresfd, &res, sizeof(res));
-	printf("Client 1: Res of %d %c %d = %d ret =%d\n",cmnd.op1, cmnd.op, cmnd.op2,res.res,ret);	
+	printf("Client 1 %d: Res of %d %c %d = %d ret =%d \n",getpid(),cmnd.op1, cmnd.op, cmnd.op2,res.res,ret);	
+	strcat(unl,clififo);
+	system(unl);
+	kill(getpid(),-9);
 }
 
 int main()
 {
 	int sercmndfd,ret;
-	char clififo[20];
-	char unl[25]={"unlink "};
 	//open serverfifo in write mode
-	//sleep(1);
 	sercmndfd = open(SER_FIFO_NAME, O_WRONLY);
 	//perror("client 1 open:");
 	if(sercmndfd == -1){perror("Client cannot open server fifo:");}
@@ -59,7 +61,4 @@ int main()
 	printf("Client 1: before pause \n");
 #endif
 	pause();
-	strcat(unl,clififo);
-	system(unl);
-	exit(0);
 }

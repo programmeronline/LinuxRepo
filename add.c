@@ -38,5 +38,4 @@ int main()
 	if(ret == -1){perror("Add: writing to addresfifo: ");}
 	close(addresfd);
 	exit(0);
-
 }

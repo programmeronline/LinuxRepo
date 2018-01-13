@@ -11,7 +11,7 @@
 #define MUL_CMND_FIFO_NAME "./mulcmndfifo"
 #define MUL_RES_FIFO_NAME "./mulresfifo"
 
-#define DEBUG
+//#define DEBUG
 int main()
 {
 	COMMAND cmnd;
@@ -26,8 +26,9 @@ int main()
 		perror("Server open ser fifo");
 	while(1)
 	{
-		//printf("After while\n");
+		printf("After while\n");
 		cmnd = readCommand(sercmndfd);
+		printf("After read\n");
 		if(cmnd.pid == 0)
 			continue;
 		//parse data
@@ -49,6 +50,7 @@ int main()
 				if(ret > 0)
 				{
 					//open the addcommandfifo in write mode and write the command data
+					printf("before addcmnd open\n");
 					addcmndfd = open(ADD_CMND_FIFO_NAME, O_WRONLY);
 					ret = write(addcmndfd, &cmnd, sizeof(cmnd));
 					close(addcmndfd);	
@@ -56,11 +58,9 @@ int main()
 					printf("Server: waiting for add result\n");
 #endif
 					//open addresfifo in read mode and block on read
-					//sleep(1);//wait for operationt to complete and create resfifo
 					while((addresfd = open(ADD_RES_FIFO_NAME, O_RDONLY)) == -1);
 					if(addresfd == -1){perror("Server cannot open addresfifo:");}
 					//read the result and parse pid
-					//sleep(2);//wait for the 
 					ret = read(addresfd, &res, sizeof(res));
 					ret = close(addresfd);
 					notifyClient(res);
@@ -93,11 +93,9 @@ int main()
 					printf("Server: waiting for sub result\n");
 #endif
 					//open addresfifo in read mode and block on read
-					//sleep(1);//wait for operationt to complete and create resfifo
 					while((subresfd = open(SUB_RES_FIFO_NAME, O_RDONLY)) == -1);
 					if(subresfd == -1){perror("Server cannot open subresfifo:");}
 					//read the result and parse pid
-					//sleep(2);//wait for the 
 					ret = read(subresfd, &res, sizeof(res));
 					ret = close(subresfd);
 					notifyClient(res);	
@@ -130,11 +128,9 @@ int main()
 					printf("Server: waiting for mul result\n");
 #endif
 					//open addresfifo in read mode and block on read
-					//sleep(1);//wait for operationt to complete and create resfifo
 					while((mulresfd = open(MUL_RES_FIFO_NAME, O_RDONLY)) == -1);
 					if(mulresfd == -1){perror("Server cannot open mulresfifo:");}
 					//read the result and parse pid
-					//sleep(2);//wait for the 
 					ret = read(mulresfd, &res, sizeof(res));
 					ret = close(mulresfd);
 					notifyClient(res);	
