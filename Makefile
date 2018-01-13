@@ -1,4 +1,4 @@
-all : server client1 client2 client3 add sub mul
+all : server client1 client2 client3 add sub mul loop
 client1: client1.o
 	gcc -o client1 client1.o
 client2: client2.o

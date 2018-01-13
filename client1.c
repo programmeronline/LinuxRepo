@@ -21,10 +21,11 @@ void displayres(int signal)
 	kill(getpid(),-9);
 }
 
-int main()
+int main(int argc, char *argv[])
 {
 	int sercmndfd,ret;
 	//open serverfifo in write mode
+	srand(getpid());
 	sercmndfd = open(SER_FIFO_NAME, O_WRONLY);
 	//perror("client 1 open:");
 	if(sercmndfd == -1){perror("Client cannot open server fifo:");}
@@ -33,8 +34,8 @@ int main()
 	//	perror("Client: setting signal handler:");
 	}
 	cmnd.op = '+';
-	cmnd.op1 = 1;
-	cmnd.op2=2;
+	cmnd.op1 = rand()%100;
+	cmnd.op2=rand()%100;
 	cmnd.pid = getpid();
 
 	//write the command data into serverfifo
@@ -44,7 +45,6 @@ int main()
 		close(sercmndfd);
 	//create cliresfifo 
 	sprintf(clififo,CLI_RES_FIFO_NAME,getpid());
-	printf("Client 1: clififo name %s\n",clififo);
 #ifdef DEBUG 
 	printf("Client 1: clififo name %s\n",clififo);
 #endif
