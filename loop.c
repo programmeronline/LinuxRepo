@@ -10,7 +10,7 @@ int main()
 	for(i=0; i<n; i++)
 	{
 		printf("Iteration %d\n",i);
-		system("./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1");
+		system("./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1 & ./client1");
 
 	}
 //	system("killall client1");
