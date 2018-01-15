@@ -36,3 +36,27 @@ not recommended to use for a resource which is always shared
 GDB
 use "commands" to execute multiple commands after breakpoint is hit. like printing loop or array values
 
+Shared memory
+1) it is a ranget of available physical addresses
+2) created outside process context
+3) scope of shaed memory is specific to each process, local or data
+4) sema is mandatory for shared memory implementation
+5) when shmget is called a page from page table is allocated. this page will be in lowest distance from the pages used by page
+6) the buffer is allocated and cleared filled with ascii 26
+7) if the creator locks it(RDONLY) only the creator can unlock it
+	if other processes lock it, any other process can unlock
+
+Threads
+1) gets own stack 
+2) own local vari
+3) shares global varaibles
+4) shares file descriptors
+5) shares malloc'd data
+6) signal handler code is shared but signal handlers should be registered by each thread sepearately
+7) sig pending will be shared?
+
+pthread_create
+
+1) thread is finish when pthread_exit()
+2) 
+
