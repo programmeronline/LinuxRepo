@@ -3,6 +3,16 @@
 #include "headers.h"
 #define MESS_SIZE	(sizeof(int)*2) + sizeof(char)+2
 #define RES_SIZE	(sizeof(long int))
+#define SEMA_KEY 	4567
+#define MESQ_KEY	1234
+#define COMMAND_MESS_TYPE	1
+#define SER_CMND_SEMA	0
+union semun
+{
+int val;
+struct semids_ds *buf;
+unsigned short *array;
+};
 typedef struct 
 {
 char op;

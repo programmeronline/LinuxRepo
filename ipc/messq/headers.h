@@ -9,5 +9,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/msg.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
 
 #endif
