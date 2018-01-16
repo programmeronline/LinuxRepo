@@ -53,10 +53,35 @@ Threads
 4) shares file descriptors
 5) shares malloc'd data
 6) signal handler code is shared but signal handlers should be registered by each thread sepearately
-7) sig pending will be shared?
+7) pending signal queues are different
+8) timing faults and sync
+
+return of the threads
+	pthread_join(tid,return **);
+1) new thread must have thread id, must exit with pthread_exit
+2) the calling thread should join to simulate wait system call(wait for thread to finish execution)
+3) pthread_kill
+
+sem_int(sem_t  *sem, int pshared, unsigned int value)
+pshared param controls the type of semaphore
+if pshared = 0 the semaphore is local to single process , if 1 it is visible to othre processes also
+
+sem_wait - increments the sem value by 1
+sem_post - decrements the sem value by 1
+
 
 pthread_create
 
 1) thread is finish when pthread_exit()
-2) 
+2)
 
+scp 120 ipaddress:\
+
+mutex;
+created by macros
+faster than binary semaphores
+only thread can access it
+	mutex_init(mutex, attr)
+	mutex_lock(mutes)
+	mutex_unlock(mutex)
+	mutex_destroy(mutex) 
