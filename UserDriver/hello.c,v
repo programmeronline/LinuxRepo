@@ -1,0 +1,138 @@
+head	1.5;
+access;
+symbols;
+locks
+	root:1.5; strict;
+comment	@ * @;
+
+
+1.5
+date	2018.01.20.09.38.05;	author root;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2018.01.20.08.57.40;	author root;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2018.01.20.08.56.31;	author root;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2018.01.20.08.33.56;	author root;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2018.01.20.07.31.27;	author root;	state Exp;
+branches;
+next	;
+
+
+desc
+@driver registratio using register_chrdev implemented
+@
+
+
+1.5
+log
+@blah
+/
+@
+text
+@#include "headers.h"
+#include "declarations.h"
+//#include "fileops.h"
+//commented
+static int __init init_fun(void)
+{
+	int ret;
+	printk(KERN_INFO "Hello im a KO, I am initialized\n");
+	majorno = MAJOR_NO;
+	minorno = MINOR_NO;
+	//majorno = register_chrdev(majorno, DEVNAME, &fops);
+	
+	ret = alloc_chrdev_region(&devid,minorno, nod,DEVNAME);
+	//if(majorno == -1)
+	if(ret == -1)
+	{
+		printk(KERN_ERR "ERROR: Cannot register device\n");
+		goto out;
+	}
+	majorno = MAJOR(devid);
+	minorno = MINOR(devid);
+	printk(KERN_INFO "I got major number %d\n",majorno);
+	printk(KERN_INFO "I got minor number %d\n",minorno);
+	provider_module();
+	return 0;
+out:
+	return -1;
+}
+
+
+
+static void __exit exit_fun(void)
+{
+	printk(KERN_INFO "Hello i am a KO, I am leaving BYE!\n");
+	//unregister_chrdev(majorno, DEVNAME);
+	unregister_chrdev_region(devid,nod);
+}
+
+module_init(init_fun);
+module_exit(exit_fun);
+@
+
+
+1.4
+log
+@correct minorno macro use
+@
+text
+@d24 1
+@
+
+
+1.3
+log
+@used alloc_chrdev_region for driver registration
+@
+text
+@d10 1
+a10 1
+	minorno = MINORNO;
+@
+
+
+1.2
+log
+@added commented
+@
+text
+@d3 1
+a3 1
+#include "fileops.h"
+d7 1
+d10 6
+a15 2
+	majorno = register_chrdev(majorno, DEVNAME, &fops);
+	if(majorno == -1)
+d20 2
+d23 1
+d34 2
+a35 1
+	unregister_chrdev(majorno, DEVNAME);
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d4 1
+a4 1
+
+@

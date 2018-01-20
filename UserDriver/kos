@@ -1,0 +1,40 @@
+#! /bin/bash
+#rmmod hello.ko
+#make clean
+#read -p "Check in files?(y/n) "
+for file in $(ls *.h) $(ls *.c) #check in files
+do
+	ci $file
+done
+
+for file in $(ls *.c,v) $(ls *.h,v)
+do
+	co $file
+done
+
+if ( make ) #() is used to execute a command and it will return 0 or 1 on fail and success respectively
+then
+	read -p "make success! Insert module (y/n)?" #read number of character n1, -p prompt to ask user to insert dirver or not
+	if [ $REPLY = 'y' ] #REPLY is the OS defined variable, [] is used to compare a value, -eq
+	then 
+		insmod modules/hello1.ko
+		lsmod 
+		read
+		dmesg
+		read
+		cat /proc/devices
+		read 
+		cat /proc/modules
+		read
+	fi
+else
+	echo "make failed"
+	read 
+fi
+
+for file in $(ls *.c,v) $(ls *.h,v)
+do
+	co -l $file
+done
+
+#insmod modules/hello.ko
