@@ -207,4 +207,29 @@ compiling device driver
 $(MAKE) -C $/lib/moduules/../build M=$PWD modules
 in makefile "-C" change to kernel directory /lib/modules/../build..uses current kernel variables and dependencies
 -M 
-device table in kernel
+there will be device table in kernel
+intitally 3 entires are needed to make the driver visible in the table
+
+1) major 
+2) minor
+3) driver name
+
+
+algo for initialization function
+1) register devide
+2) get memory for scull device
+3) set memory to null in register
+4) initalize device (prepare mydev, cdev, items)
+5) get device status
+
+RCS
+rcs -i <filename> //insert a file into rcs
+ci //submit file
+co //checkout in read only mode
+co -l <filename> //p4v checkout, edit mode
+co -r1.1 //check out specific revision number
+
+devide table
+|major|minor|devicename|dev|cdev|
+
+struct mydev will have "data" data will point to cdev , cdev will have file operations
