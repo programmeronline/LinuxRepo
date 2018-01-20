@@ -1,0 +1,12 @@
+#! /bin/bash
+#rmmod hello.ko
+#make clean
+read -p "submit changed files?(y/n)? "
+if [ $REPLY = 'y' ]
+then
+	for file in $(ls *.h) $(ls *.c) #check in files
+	do
+		ci $file
+	done
+fi
+#insmod modules/hello.ko
