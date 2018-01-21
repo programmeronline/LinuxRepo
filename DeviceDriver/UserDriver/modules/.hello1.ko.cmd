@@ -1,0 +1,1 @@
+cmd_/home/ish/git/LinuxRepo/UserDriver/hello1.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/ish/git/LinuxRepo/UserDriver/hello1.ko /home/ish/git/LinuxRepo/UserDriver/hello1.o /home/ish/git/LinuxRepo/UserDriver/hello1.mod.o ;  true
