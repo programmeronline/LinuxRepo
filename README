@@ -229,7 +229,7 @@ co //checkout in read only mode
 co -l <filename> //p4v checkout, edit mode
 co -r1.1 //check out specific revision number
 
-devide table
+device table
 |major|minor|devicename|dev|cdev|
 
 struct mydev will have "data" data will point to cdev , cdev will have file operations
@@ -239,4 +239,10 @@ Softirq's and tasklets are used in bottom half processing
 1) softirq's are registerd statically at compile time while taklets can be registered dynamically
 2) two of same type of softirqs can run simultaneously while fferent tasklets can run concurrently on
 different processors, but two of the same type of tasklet cannot run simultaneously. 
+alternatively we can use kernel timers to defer a task to not run until specified time.
+
+SOFT_IRQ
+struct softirq_action {
+void (*action)(struct softirq_action *);
+};
 
