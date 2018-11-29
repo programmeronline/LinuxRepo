@@ -245,4 +245,8 @@ SOFT_IRQ
 struct softirq_action {
 void (*action)(struct softirq_action *);
 };
-
+wORK_QUEUES
+3) If the
+deferred work needs to sleep, work queues are used. If the deferred work need not sleep,
+softirqs or tasklets are used. 
+4) RUNS IN PROCESS CONTEXT
