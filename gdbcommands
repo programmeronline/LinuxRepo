@@ -1,0 +1,35 @@
+up- go one stack frame up
+gdb commands
+bt- backtrace, list the api calls 
+info inferior- list all process, parent and child
+inferior 1 or 2, switch process
+info threads - list the threads created
+set detach-on-fork off- dont get control of child for debugging
+set detach-on-fork on- get control of child for debugging
+generate-core-file hang issue.core- issue.core is the core dump file , same file can be used to debug using gdb
+gdb  
+list
+disassemble
+
+#!/bin/bash 
+sudo ifconfig tap0 down 
+sudo ifconfig br0 down 
+sudo brctl delif br0 ens36 
+sudo brctl delif br0 tap0 
+sudo brctl delbr br0 
+sudo tunctl -d tap0 
+sudo brctl addbr br0 
+sudo tunctl -u 1000 
+sudo ifconfig ens36 0.0.0.0 promisc up 
+sudo ifconfig tap0 0.0.0.0 promisc up 
+sudo ifconfig br0 172.16.78.100 netmask 255.255.255.0 up 
+sudo brctl stp br0 off 
+sudo brctl setfd br0 1 
+sudo brctl sethello br0 1 
+sudo brctl addif br0 ens36 
+sudo brctl addif br0 tap0 
+sudo bash -c 'echo 1 > /proc/sys/net/ipv4/ip_forward' 
+sudo bash -c 'echo 1 > /proc/sys/net/ipv4/conf/tap0/proxy_arp' 
+sudo chmod 666 /dev/net/tun 
+
+sudo qemu-system-arm -M vexpress-a9 -m 512M -net nic,model=lan9118 -net tap,ifname=tap0 -dtb linux-5.1.16/arch/arm/boot/dts/vexpress-v2p-ca9.dtb -kernel linux-5.1.16/arch/arm/boot/zImage -initrd rootfs.img.gz -append "root=/dev/ram rdinit=/linuxrc" 
