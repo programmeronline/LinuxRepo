@@ -51,6 +51,7 @@ int validate_num_in_text(const char *);
 int get_fixed_text_len(int len);
 char* get_hundreds(char *);
 char* get_tens(char *);
+char* get_thousand(char *);
 char num_words[][9]= {"zero",
 	"one","two","three","four","five",
 	"six","seven","eight","nine","ten",
@@ -77,10 +78,10 @@ int main()
 	if(usr_str[0] == '0')
 		str = usr_str+1;
 	num = (int *)malloc((len = strlen(str)));
-	bool free_text = false;
 	int text_index = 0;
-	char *tens_text = NULL;
 	int len_hundreds = 0;
+	
+	char *tens_text = NULL, *hundreds_text = NULL;
 	if(validate_num_in_text(str) == 0)
 	{
 		printf("Entered number is correct\n");
@@ -98,16 +99,22 @@ int main()
 				text = get_hundreds(str);
 				break;
 			case 4:
-				len_hundreds = get_fixed_text_len(len);
-				text = (char *)malloc(sizeof(char) * len_hundreds);
-				strcpy(text, num_words[str[0]-'0']);
-				text[(len_hundreds = strlen(text))]= ' ';
-				strcpy(len_hundreds+1+text, num_words_3[1]);
-				text[(len_hundreds = strlen(text))]= ' ';	
-				strcpy(1+len_hundreds+text, (tens_text = get_hundreds(str+1)));
-				free(tens_text);
+				text = get_thousand(str);
 				break;
 			case 5:
+				text = (char *)malloc(sizeof(char) * get_fixed_text_len(len));
+				tens_text = (char *)malloc(sizeof(char) * 3);
+				strncpy(tens_text, str, 2);
+				tens_text[2]='\0';
+				tens_text = get_tens(tens_text);
+				hundreds_text = get_hundreds(str+2);
+				strcpy(text, tens_text);
+				len = strlen(text);
+				text[len]=' ';
+				strcpy(1+len+text, num_words_3[1]);
+				len += strlen(text);
+				text[len]=' ';
+				strcpy(1+len+text, hundreds_text);
 				break;
 		}
 		printf("Entered number is %s\n",text);
@@ -123,6 +130,53 @@ int main()
 	return 0;
 }
 
+char* get_tens(char *str)
+{
+	char *text = NULL;
+	int len = strlen(str);
+	int text_index = 0;
+	if(strcmp(str, "10") == 0)
+
+	{
+		text = (char *)malloc(sizeof(char) * (1+strlen(num_words[10])));
+		strcpy(text, num_words[10]);
+	}
+	else if(str[0] == 1+'0')//check for 11-19
+	{	
+		text_index = (str[1]-'0')+10;
+		text = (char *)malloc(sizeof(char) * (1+strlen(num_words[text_index])));
+		strcpy(text, num_words[text_index]);
+		printf("Text no match\n");
+	}
+	else if(strcmp(str,"20")==0)//20
+	{
+		text = (char *)malloc(sizeof(char) * (1+strlen(num_words_2[0])));
+		strcpy(text, num_words_2[0]);
+	}
+	else//21-99
+	{
+		text = (char *)malloc(sizeof(char) * get_fixed_text_len(len));
+		char *cpyret = (char *)strcpy(text, num_words_2[(str[0]-'0')-2]);
+		text[(len = strlen(cpyret))]= ' '; 
+		strcpy(len+1+text,num_words[str[1]-'0']);
+	}
+	return text;
+}
+char* get_thousand(char *str)
+{
+	int len_hundreds = 0;
+	int len = strlen(str);
+	char *text = NULL, *tens_text = NULL;
+	len_hundreds = get_fixed_text_len(len);
+	text = (char *)malloc(sizeof(char) * len_hundreds);
+	strcpy(text, num_words[str[0]-'0']);
+	text[(len_hundreds = strlen(text))]= ' ';
+	strcpy(len_hundreds+1+text, num_words_3[1]);
+	text[(len_hundreds = strlen(text))]= ' ';	
+	strcpy(1+len_hundreds+text, (tens_text = get_hundreds(str+1)));
+	free(tens_text);
+	return text;
+}
 
 char *get_hundreds(char *str)
 {
@@ -136,7 +190,6 @@ char *get_hundreds(char *str)
 	text[(len_hundreds = strlen(text))] = ' ';
 	strcpy(1+len_hundreds+text, (tens_text = get_tens(str+1)));
 	free(tens_text);
-
 	return text;
 }
 
@@ -174,6 +227,7 @@ int get_fixed_text_len(int len)
 			return 15+get_fixed_text_len(3);
 			break;
 		case 5:
+			return 23+get_fixed_text_len(3);
 			break;
 
 	}
@@ -181,35 +235,3 @@ int get_fixed_text_len(int len)
 }
 
 
-char* get_tens(char *str)
-{
-	char *text = NULL;
-	int len = strlen(str);
-	int text_index = 0;
-	if(strcmp(str, "10") == 0)
-
-	{
-		text = (char *)malloc(sizeof(char) * (1+strlen(num_words[10])));
-		strcpy(text, num_words[10]);
-	}
-	else if(str[0] == 1+'0')//check for 11-19
-	{	
-		text_index = (str[1]-'0')+10;
-		text = (char *)malloc(sizeof(char) * (1+strlen(num_words[text_index])));
-		strcpy(text, num_words[text_index]);
-		printf("Text no match\n");
-	}
-	else if(strcmp(str,"20")==0)
-	{
-		text = (char *)malloc(sizeof(char) * (1+strlen(num_words_2[0])));
-		strcpy(text, num_words_2[0]);
-	}
-	else
-	{
-		text = (char *)malloc(sizeof(char) * get_fixed_text_len(len));
-		char *cpyret = (char *)strcpy(text, num_words_2[(str[0]-'0')-2]);
-		text[(len = strlen(cpyret))]= ' '; 
-		strcpy(len+1+text,num_words[str[1]-'0']);
-	}
-	return text;
-}
