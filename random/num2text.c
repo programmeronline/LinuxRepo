@@ -81,7 +81,8 @@ int main()
 	int text_index = 0;
 	int len_hundreds = 0;
 	
-	char *tens_text = NULL, *hundreds_text = NULL;
+	char *tens_text = NULL,*tens_text1, *hundreds_text = NULL;
+	
 	if(validate_num_in_text(str) == 0)
 	{
 		printf("Entered number is correct\n");
@@ -104,17 +105,23 @@ int main()
 			case 5:
 				text = (char *)malloc(sizeof(char) * get_fixed_text_len(len));
 				tens_text = (char *)malloc(sizeof(char) * 3);
+				tens_text1 = tens_text;
 				strncpy(tens_text, str, 2);
 				tens_text[2]='\0';
+				//if(st[2] == '0');
 				tens_text = get_tens(tens_text);
+				
 				hundreds_text = get_hundreds(str+2);
 				strcpy(text, tens_text);
 				len = strlen(text);
 				text[len]=' ';
 				strcpy(1+len+text, num_words_3[1]);
-				len += strlen(text);
+				len = strlen(text);
 				text[len]=' ';
 				strcpy(1+len+text, hundreds_text);
+				free(tens_text);
+				free(hundreds_text);
+				free(tens_text1);
 				break;
 		}
 		printf("Entered number is %s\n",text);
@@ -135,7 +142,14 @@ char* get_tens(char *str)
 	char *text = NULL;
 	int len = strlen(str);
 	int text_index = 0;
-	if(strcmp(str, "10") == 0)
+	if(strncmp(str, "00",2) == 0)
+		return NULL;
+	if(str[0] == '0')
+	{
+		text = (char *)malloc(sizeof(char) * (1+strlen(num_words[str[1]-'0'])));
+		strcpy(text, num_words[str[1] - '0']);
+	}
+	else if(strcmp(str, "10") == 0)
 
 	{
 		text = (char *)malloc(sizeof(char) * (1+strlen(num_words[10])));
@@ -157,8 +171,11 @@ char* get_tens(char *str)
 	{
 		text = (char *)malloc(sizeof(char) * get_fixed_text_len(len));
 		char *cpyret = (char *)strcpy(text, num_words_2[(str[0]-'0')-2]);
-		text[(len = strlen(cpyret))]= ' '; 
-		strcpy(len+1+text,num_words[str[1]-'0']);
+		if(str[1] != '0')
+		{
+			text[(len = strlen(cpyret))]= ' '; 
+			strcpy(len+1+text,num_words[str[1]-'0']);
+		}
 	}
 	return text;
 }
@@ -169,27 +186,55 @@ char* get_thousand(char *str)
 	char *text = NULL, *tens_text = NULL;
 	len_hundreds = get_fixed_text_len(len);
 	text = (char *)malloc(sizeof(char) * len_hundreds);
-	strcpy(text, num_words[str[0]-'0']);
-	text[(len_hundreds = strlen(text))]= ' ';
-	strcpy(len_hundreds+1+text, num_words_3[1]);
+	strcpy(text, num_words[str[0]-'0']);//copy the first digit, ex 1000, one is copied
+	text[(len_hundreds = strlen(text))]= ' ';//space "one "
+	strcpy(len_hundreds+1+text, num_words_3[1]);//copy thousand- "one thousand "
+	if(strncmp(str+1,"000",3) == 0)
+	{
+		return text;
+	}
 	text[(len_hundreds = strlen(text))]= ' ';	
-	strcpy(1+len_hundreds+text, (tens_text = get_hundreds(str+1)));
-	free(tens_text);
+	tens_text = get_hundreds(str+1);
+	if(tens_text != NULL)
+	{
+		strcpy(1+len_hundreds+text, tens_text);
+		free(tens_text);
+	}
 	return text;
 }
 
 char *get_hundreds(char *str)
 {
-	int len = strlen(str), len_hundreds;
+	int len = strlen(str), len_hundreds = -1;
 	char *text = NULL, *tens_text = NULL;
 	text = (char *)malloc(sizeof(char) * get_fixed_text_len(len));
+	if(str[0] == '0')
+	{
+		if(str[1] != '0')
+		{
+			len_hundreds = -1;
+			goto TENS;
+		}
+		else
+		{
+			strcpy(text, num_words[str[2]-'0']);
+			return text;
+		}
+	}
 	strcpy(text,num_words[str[0]-'0']);
 	len_hundreds = strlen(text);
 	text[len_hundreds] = ' ';
 	strcpy(len_hundreds+1+text, num_words_3[0]);
 	text[(len_hundreds = strlen(text))] = ' ';
-	strcpy(1+len_hundreds+text, (tens_text = get_tens(str+1)));
-	free(tens_text);
+
+TENS:   tens_text = get_tens(str+1);
+	if(tens_text !=  NULL)
+	{
+		strcpy(1+len_hundreds+text, tens_text);
+		free(tens_text);
+	}
+	else
+		text[len_hundreds+1] = '\0';
 	return text;
 }
 
