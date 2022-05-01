@@ -53,7 +53,9 @@ char *get_ten_thousand(char *);
 char* get_hundreds(char *);
 char* get_tens(char *);
 char* get_thousand(char *);
-char num_words[][9]= {"zero",
+void print_num2text(char *);
+char *i2str(int);
+char num_words[][11]= {"zero",
 	"one","two","three","four","five",
 	"six","seven","eight","nine","ten",
 	"eleven","twelve", "thirteen","fourteen","fifteen",
@@ -64,29 +66,58 @@ char num_words_2[][9]={
 	"sixty","seventy","eighty","ninety"
 };
 char num_words_3[][9]={"hundred","thousand"};
-
+char numbers[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+char *str = NULL;
 int main()
 {
 	char *str, *usr_str;
-	int len = 0,i;
 	usr_str = (char *)malloc(sizeof(char) * 60);
-	int *num = NULL;
-	char *text = NULL;
-	printf("Enter number in string\n");
+	str = (char *)malloc(sizeof(char) * 6);
+	int limit = 0;
+	printf("Enter limit\n");
+	scanf("%d",&limit);
+	for(int i = 1; i < limit ; i++)
+	{
+		sprintf(str, "%d", i);
+		print_num2text(str);
+		fflush(stdout);
+		memset(str, 0, 6);
+	}
+	/*printf("Enter number in string\n");
 	scanf("%s",usr_str);
 	printf("Entered number is %s\n",usr_str);
-	str = usr_str;
+	*/
+	free(str);
+	return 0;
+}
+
+char *i2str(int num)
+{
+	int digit = 0, i = 0;
+	if(num < '9')
+		str[i] = numbers[num];
+	while(num/10 != 0)
+	{
+		digit = num % 10;
+		str[i++] = numbers[digit];
+		num = num/10;
+	}
+	str[i] = '\0';
+}
+void print_num2text(char *usr_str)
+{
+	int len = strlen(usr_str),i;
+	char *str = usr_str;
 	if(usr_str[0] == '0')
 		str = usr_str+1;
-	num = (int *)malloc((len = strlen(str)));
 	int text_index = 0;
 	int len_hundreds = 0;
 	
 	char *tens_text = NULL,*tens_text1, *hundreds_text = NULL;
+	char *text = NULL;
 	
 	if(validate_num_in_text(str) == 0)
 	{
-		printf("Entered number is correct\n");
 		i = 0;
 		switch(len)
 		{
@@ -107,17 +138,12 @@ int main()
 				text = get_ten_thousand(str);
 				break;
 		}
-		printf("Entered number is %s\n",text);
+		printf("%s : %s\n",usr_str,text);
 	}
 	else
 		printf("Incorrect text: Enter only numbers !!!!!!!!!!\n");
-
-	if(usr_str != NULL)
-		free(usr_str);
-	if(num != NULL)
-		free(num);
 	free(text);
-	return 0;
+
 }
 char *get_ten_thousand(char *str)
 {
@@ -168,7 +194,6 @@ char* get_tens(char *str)
 		text_index = (str[1]-'0')+10;
 		text = (char *)malloc(sizeof(char) * (1+strlen(num_words[text_index])));
 		strcpy(text, num_words[text_index]);
-		printf("Text no match\n");
 	}
 	else if(strcmp(str,"20")==0)//20
 	{
