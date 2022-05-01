@@ -33,3 +33,18 @@ sudo bash -c 'echo 1 > /proc/sys/net/ipv4/conf/tap0/proxy_arp'
 sudo chmod 666 /dev/net/tun 
 
 sudo qemu-system-arm -M vexpress-a9 -m 512M -net nic,model=lan9118 -net tap,ifname=tap0 -dtb linux-5.1.16/arch/arm/boot/dts/vexpress-v2p-ca9.dtb -kernel linux-5.1.16/arch/arm/boot/zImage -initrd rootfs.img.gz -append "root=/dev/ram rdinit=/linuxrc" 
+
+
+
+/********** HEAP PROFILER *********/
+
+valgrind --tool=massif --time-unit=B ./a.out
+ms_print massif.out.pid
+
+/************** address sanitizer ********/
+cc hellowrld.c -fsanitize=address
+
+/************* GPROF ***********/
+cc -pg -o a.out num2text.c
+this will generate a output file gmon.out which is required for next below command
+gprof a.out>gprofreport
