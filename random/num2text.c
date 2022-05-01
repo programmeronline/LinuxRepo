@@ -49,6 +49,7 @@
  * */
 int validate_num_in_text(const char *);
 int get_fixed_text_len(int len);
+char *get_ten_thousand(char *);
 char* get_hundreds(char *);
 char* get_tens(char *);
 char* get_thousand(char *);
@@ -103,25 +104,7 @@ int main()
 				text = get_thousand(str);
 				break;
 			case 5:
-				text = (char *)malloc(sizeof(char) * get_fixed_text_len(len));
-				tens_text = (char *)malloc(sizeof(char) * 3);
-				tens_text1 = tens_text;
-				strncpy(tens_text, str, 2);
-				tens_text[2]='\0';
-				//if(st[2] == '0');
-				tens_text = get_tens(tens_text);
-				
-				hundreds_text = get_hundreds(str+2);
-				strcpy(text, tens_text);
-				len = strlen(text);
-				text[len]=' ';
-				strcpy(1+len+text, num_words_3[1]);
-				len = strlen(text);
-				text[len]=' ';
-				strcpy(1+len+text, hundreds_text);
-				free(tens_text);
-				free(hundreds_text);
-				free(tens_text1);
+				text = get_ten_thousand(str);
 				break;
 		}
 		printf("Entered number is %s\n",text);
@@ -136,7 +119,32 @@ int main()
 	free(text);
 	return 0;
 }
-
+char *get_ten_thousand(char *str)
+{
+	int len = strlen(str);
+	char *tens_text=NULL, *hundreds_text=NULL, *tens_text1 = NULL;
+	char *text = (char *)malloc(sizeof(char) * get_fixed_text_len(len));
+	tens_text = (char *)malloc(sizeof(char) * 3);
+	tens_text1 = tens_text;
+	strncpy(tens_text, str, 2);
+	tens_text[2]='\0';
+	tens_text = get_tens(tens_text);	
+	strcpy(text, tens_text);
+	len = strlen(text);//copy number for first two digits
+	text[len]=' ';
+	strcpy(1+len+text, num_words_3[1]);//copy "thousand"
+	len = strlen(text);
+	hundreds_text = get_hundreds(str+2);
+	if(hundreds_text != NULL)
+	{
+		text[len]=' ';
+		strcpy(1+len+text, hundreds_text);
+		free(hundreds_text);
+	}
+	free(tens_text);
+	free(tens_text1);
+	return text;
+}
 char* get_tens(char *str)
 {
 	char *text = NULL;
@@ -217,8 +225,16 @@ char *get_hundreds(char *str)
 		}
 		else
 		{
-			strcpy(text, num_words[str[2]-'0']);
-			return text;
+			if(str[2] != '0')
+			{
+				strcpy(text, num_words[str[2]-'0']);
+				return text;
+			}
+			else 
+			{
+				free(text);	
+				return NULL;
+			}
 		}
 	}
 	strcpy(text,num_words[str[0]-'0']);
