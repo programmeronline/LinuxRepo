@@ -1,0 +1,9 @@
+ by default the scheduling policy is set to Other
+available scheduling policies are 
+1) SCHED_FIFO
+2) SCHED_RR
+3) SCHED_OTHER
+default priority is 0
+
+max priority for Other is 0
+max priority for FIFO and RR is 99
