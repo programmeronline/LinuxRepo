@@ -7,3 +7,6 @@ default priority is 0
 
 max priority for Other is 0
 max priority for FIFO and RR is 99
+
+to use CPU_SET or CPU_CLEAR, we need to define below macro as the first line of code in the file otherwise it will not compile
+#define _GNU_SOURCE
