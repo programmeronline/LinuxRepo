@@ -8,5 +8,14 @@ default priority is 0
 max priority for Other is 0
 max priority for FIFO and RR is 99
 
-to use CPU_SET or CPU_CLEAR, we need to define below macro as the first line of code in the file otherwise it will not compile
+4) to use CPU_SET or CPU_CLEAR, we need to define below macro as the first line of code in the file otherwise it will not compile
 #define _GNU_SOURCE
+
+5) To change the policy and priority use below api
+1) pthread_attr_init();//initialize with default values
+2) pthread_attr_getschedparam();//
+3) change the priority in sched_param struct
+4) pthread_attr_setschedparam();
+5) pthread_attr_setinheritsched(attr, PTHREAD_EXPLICIT_SCHED)//withou this flag the thread will use the policy of creating thread which is by default set to SCHED_OTHER
+6) pthread_create()
+

@@ -6,28 +6,44 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <sched.h>
+//In this program, thread 1 is created and assumed that it runs first, 
+//it runs until i != 100, meanwhile thread2 is created and assumed that it is in the 
+//fifo queue to run but it cannot run because a high priority task is currently executing and that thread came first
+//when i == 100 , first high priority thread goes to sleep, now the next task in fifo queue is thread2, even though it is having low priority, it will execute until it finishes becuase that is how fifo works, in fifo the first task that gets scheduled continues to execute untill it finishes its execution or it goes into sleep.
+//why sched_yield didnt allow second thread to start execute?
 
 #define PRIORITY 20
 //#define POLICY SCHED_RR
 #define POLICY SCHED_FIFO
 
-//compile with -lpthread option
-//int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *), void *arg);
-//int pthread_join(pthread_t thread, void **retval);
-//int pthread_cancel(pthread_t thread);
 //
-
+#define POLICY SCHED_FIFO
 void print_affinity();
 void *thread_routine(void *);
 void *thread_routine(void *x)
 {
 	int ret ;
-	unsigned int count = 0x10, i = 0;
-	cpu_set_t mask;
-	CPU_ZERO(&mask);//clear all means this process can execute on any core
-	CPU_SET(2, &mask);//force the kernel to execute on core 0
-	printf("Before set affinity executing on CPU %d\n",sched_getcpu());
-	//ret = sched_setaffinity(0, sizeof(cpu_set_t), &mask);
+	unsigned int count = 0xFFF, i = 0;
+
+	if(ret != 0)
+		perror("Set affinity failed");
+	while( i < count)
+	{
+		if(i % 5 == 0)
+			printf("######### I am thread 1 ########\n");
+		i++;
+		if(i == 100)
+		{
+			printf("Thread 1: I am yielding\n");
+			sleep(1);
+		}
+	}
+	printf("I am done %d executing on %d\n",*(int *)x,sched_getcpu());	
+}
+void *thread_routine2(void *x)
+{
+	int ret ;
+	unsigned int count = 0xFFF, i = 0;
 
 	if(ret != 0)
 		perror("Set affinity failed");
@@ -35,45 +51,11 @@ void *thread_routine(void *x)
 	while( i < count)
 	{
 		if(i % 5 == 0)
-			printf("I am executing on CPU %d\n",sched_getcpu());
+			printf("######### I am thread 2 ########\n");
 		i++;
 	}
-	printf("I am done %d\n",*(int *)x);	
-	printf("After set affinity executing on CPU %d\n",sched_getcpu());
+	printf("I am done %d executing on %d\n",*(int *)x,sched_getcpu());	
 }
-void *thread_routine2(void *x)
-{
-	int ret;
-	struct sched_param my_param;
-	int policy;
-	pthread_attr_t attr;
-	
-	ret = pthread_attr_init(&attr);
-	if(ret != 0)	
-		perror("init attr 5");
-	
-	ret = pthread_getschedparam(pthread_self(), &policy, &my_param);
-
-	my_param.sched_priority = 20;
-	
-	int new_priority = my_param.sched_priority;
-	
-	ret = pthread_attr_setschedparam(&attr, &my_param);
-	if(ret != 0)	
-	{
-		perror("set priority 5");
-		printf("Error is %d\n",ret);
-	}
-	unsigned int count = 0xFF, i = 0;
-	while( i < count)
-	{
-		if(i % 2 == 0)
-			printf("I am a thread with priority %d\n",new_priority);
-		i++;
-	}
-	printf("I am done with new priority %d\n",new_priority);	
-}
-
 int main()
 {
 	struct sched_param sch_param;
@@ -95,13 +77,47 @@ int main()
 	ret = pthread_attr_init(&attr);
 	if(ret != 0)
 		perror("Attr init failed");
+	ret = pthread_attr_getschedparam(&attr, &sch_param);
+	if(ret != 0)
+		perror("get shced param failed");
+
+	priority1 = sched_get_priority_max(POLICY);//set highest priority
+	sch_param.sched_priority = priority1;
+	
+	ret = pthread_attr_setschedpolicy(&attr, POLICY);
+	if(ret != 0)
+		perror("Scheduling policy change failed");
+
+	ret = pthread_attr_setschedparam(&attr, &sch_param);
+	if(ret != 0)
+		perror("change priority failed");
+	ret = pthread_attr_setinheritsched(&attr, POLICY);
+	if(ret != 0)
+		perror("disable inherit failed 1");
+	
 	ret = pthread_create(&pthd, &attr, &thread_routine, &priority1);
 	if(ret != 0)
-		perror("Thread creation failed");
-	int i = 0;
-	while(i++ < 0xFF)
-		printf("I am main thread executing on %d\n",sched_getcpu());
+		perror("Thread creation failed 1");
+	
+	priority1 = priority1 - 10;;//set highest priority
+	sch_param.sched_priority = priority2;
+	ret = pthread_attr_setschedparam(&attr, &sch_param);
+	if(ret != 0)
+		perror("change priority failed");
+	
+	ret = pthread_attr_setinheritsched(&attr, PTHREAD_EXPLICIT_SCHED);
+	if(ret != 0)
+		perror("disable inherit failed 2");
+	
+	ret = pthread_attr_setschedpolicy(&attr, POLICY);
+	if(ret != 0)
+		perror("Policy change failed 2");
+	
+	ret = pthread_create(&pthd2, &attr, &thread_routine2, &priority2);
+	if(ret != 0)
+		perror("Thread creation failed 2");
 	pthread_join(pthd, NULL);
+	pthread_join(pthd2, NULL);
 	exit(0);	
 	return 0;
 }
