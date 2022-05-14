@@ -20,3 +20,11 @@ max priority for FIFO and RR is 99
 6) pthread_attr_setschedpolicy(attr, POLICY);
 7) pthread_create()
 
+
+
+schedule() is the main function that schedules tasks present  in
+/source/kernel/sched.c
+task_struct is the main structure, inside it thread_info is a member, thread
+thread_info will have cpu
+current_thread_info() is nothing but stack pointer
+
